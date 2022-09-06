@@ -1,0 +1,5 @@
+*.cpp
+*.cpp-pre
+*.so
+
+__pycache__/
