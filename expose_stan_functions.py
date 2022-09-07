@@ -1,3 +1,5 @@
+# will probably only work on Unix-like systems.
+
 import importlib
 import preprocess
 import subprocess

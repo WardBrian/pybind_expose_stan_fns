@@ -1,9 +1,3 @@
-# see https://github.com/rok-cesnovar/misc/blob/master/expose-cmdstanr-functions/expose_cmdstanr_functions.R
-
-# find funs with // [stan]
-# provide wrapper for rng, supply default ostream?
-# provide function for includes given cmdstan path
-# will probably only work on Unix-like systems.
 import sys
 import os
 import re
@@ -74,7 +68,9 @@ def munge_args(args: str):
             arg = ''
             continue
         arg += c
-    args_split.append(arg.strip())
+        
+    if arg:
+        args_split.append(arg.strip())
 
     return args_split
 
@@ -90,9 +86,6 @@ def populate_boilerplate(model_name, text):
         arg_names = []
         arg_defaults = []
         for arg in args:
-            if arg.startswith("std::ostream"):
-                break
-
             arg_names.append(arg.split(' ')[-1].replace('&','').replace('__', ''))
 
             if arg.startswith("boost::ecuyer"):
@@ -120,14 +113,17 @@ def set_cout(text):
 def preprocess(file, out=None):
     if out is None:
         out = file
-        
+
     model, _ = os.path.splitext(os.path.basename(file))
 
     with open(file, 'r') as f:
         text = f.read()
 
+    text = set_cout(insert_includes(text))
+    text += populate_boilerplate(model, text)
+
     with open(file, 'w') as f:
-        f.write(set_cout(insert_includes(text)) + populate_boilerplate(model, text))
+        f.write(text)
 
 if __name__ == "__main__":
     file = sys.argv[1]
