@@ -1,6 +1,10 @@
 import numpy as np
 from contextlib import redirect_stdout
 import io
+
+import sys, os
+sys.path.append(os.getcwd() + "/..")
+
 import basic
 
 print(basic.int_only_multiplication(4,5))
