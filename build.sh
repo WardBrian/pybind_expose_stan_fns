@@ -1,6 +1,5 @@
 #!/bin/bash
 
-CMDSTAN=/home/brian/Dev/cpp/cmdstan
 model_name=$(basename "$1" .stan)
 
 echo "Compiling $1 to C++"
