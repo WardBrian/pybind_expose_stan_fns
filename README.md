@@ -6,6 +6,10 @@ written in a Stan model to the Python runtime through the
 
 This is very similar to *[Exposing Stan user-defined functions using CmdStanR and Rcpp](https://rok-cesnovar.github.io/misc/exposing_cmdstanr_udf.html)*.
 
+This supports all possible Stan functions, including pRNGs and functions which edit the `target` variable.
+These are supported through two objects exposed on all models, `StanRNG` and `StanAccumulator`, which are
+thin wrappers for `boost::ecuyer1988` and `stan::math::accumulator<double>`, respectively.
+
 ## Running
 
 Currently, this has only been confirmed to work on Ubuntu. It assumes you have a working installation of
@@ -23,3 +27,6 @@ import expose_stan_functions
 basic = expose_stan_functions.expose('basic.stan')
 basic.test_printing() # etc
 ```
+
+There is also an experiment using `setuptools` to build the module in `setuptools_version.py`.
+This probably has the brightest future in terms of working on other platforms.

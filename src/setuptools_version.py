@@ -33,5 +33,5 @@ basic = Pybind11Extension(
     runtime_library_dirs=runtime_dirs,
 )
 
-# running setuptools_version.py build will build basic.stan 
+# running setuptools_version.py build will build basic.stan
 setup(ext_modules=[basic])

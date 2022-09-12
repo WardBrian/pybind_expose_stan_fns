@@ -68,7 +68,7 @@ def munge_args(args: str):
             arg = ''
             continue
         arg += c
-        
+
     if arg:
         args_split.append(arg.strip())
 
@@ -119,10 +119,13 @@ def preprocess(file, out=None):
     with open(file, 'r') as f:
         text = f.read()
 
+    if '// [[stan::function]' not in text:
+        raise ValueError("C++ file has no stan functions exposed. Did you forget --standalone-functions?")
+        
     text = set_cout(insert_includes(text))
     text += populate_boilerplate(model, text)
 
-    with open(file, 'w') as f:
+    with open(out, 'w') as f:
         f.write(text)
 
 if __name__ == "__main__":
