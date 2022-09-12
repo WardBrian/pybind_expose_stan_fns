@@ -24,3 +24,8 @@ with redirect_stdout(redirected):
     basic.test_printing()
 
 assert redirected.getvalue() == "hi there!\n"
+
+try:
+    basic.test_error()
+except ValueError as e:
+    print("Caught error:", e)

@@ -40,5 +40,10 @@ functions {
   void test_printing(){
     print("hi there!");
   }
+
+  real test_error(){
+    reject("Oops!");
+    return 1.0;
+  }
 }
 
