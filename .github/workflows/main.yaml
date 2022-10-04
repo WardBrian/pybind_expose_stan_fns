@@ -10,6 +10,9 @@ on:
   pull_request:
   workflow_dispatch: {}
 
+env:
+  CMDSTAN_VERSION: "2.30.1"
+
 jobs:
   test-package:
     name: tests
@@ -22,6 +25,18 @@ jobs:
     steps:
       - name: Check out github
         uses: actions/checkout@v2
+
+      - name: CmdStan installation cacheing
+        uses: actions/cache@v2
+        id: cmdstan-cache
+        with:
+          path: ~/.cmdstan
+          key: ${{ runner.os }}-cmdstan-${{ env.CMDSTAN_VERSION }}
+
+      - name: Install CmdStan
+        run: |
+          pipx run --spec cmdstanpy install_cmdstan --version "${{ env.CMDSTAN_VERSION }}" --cores 2 --verbose
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
