@@ -1,7 +1,7 @@
-from pybind11.setup_helpers import Pybind11Extension
 import os
-from setuptools import setup
 
+from pybind11.setup_helpers import Pybind11Extension
+from setuptools import setup
 
 cmdstan_path = os.environ["CMDSTAN"]
 

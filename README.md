@@ -16,16 +16,19 @@ Currently, this has only been confirmed to work on Ubuntu. It assumes you have a
 [CmdStan](https://github.com/stan-dev/cmdstan), and a Python environment with both
 [cmdstanpy](https://github.com/stan-dev/cmdstanpy) and [PyBind11](https://github.com/pybind/pybind11)
 
+```python
+import pybind_stan_fns
+basic = pybind_stan_fns.expose('./test/basic.stan')
+basic.test_printing() # etc
+```
+
+### Errata
+
+There is a pure-shell version of this which just runs `g++` directly.
+
 ```shell
 ./build.sh basic.stan
 python test_basic.stan
-```
-
-Alternatively, from inside python
-```python
-import expose_stan_functions
-basic = expose_stan_functions.expose('basic.stan')
-basic.test_printing() # etc
 ```
 
 There is also an experiment using `setuptools` to build the module in `setuptools_version.py`.
