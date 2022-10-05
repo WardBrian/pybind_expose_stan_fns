@@ -52,3 +52,9 @@ def test_printing(basic):
 def test_error(basic):
     with pytest.raises(ValueError):
         basic.test_error()
+
+
+def test_overload(basic):
+    assert basic.test_overload() == 0
+    assert basic.test_overload(34) == 1
+    assert basic.test_overload(np.arange(2,4)) == 2

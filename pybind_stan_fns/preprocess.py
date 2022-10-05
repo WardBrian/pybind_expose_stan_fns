@@ -39,33 +39,43 @@ PYBIND11_MODULE({model_name}, m)
 
 REDIRECT = "py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>()"
 
+
 def py_arg(name, default=None):
     if default:
         return f'py::arg("{name}") = {default}'
     return f'py::arg("{name}")'
 
-def py_fun(fn):
+
+def py_fun(fn, is_overload):
     name, args_defaults = fn
-    args = ", ".join(py_arg(name, default) for (name,default) in args_defaults)
-    return f'm.def("{name}", &{name}, {args}{", " if args else ""}{REDIRECT});'
+    args = ", ".join(py_arg(name, default) for (name, _, default) in args_defaults)
+    if is_overload:
+        arg_tys = [ty for (_, ty, _) in args_defaults]
+        fn_ptr = f"py::overload_cast<{', '.join(arg_tys)}>(&{name})"
+    else:
+        fn_ptr = f"&{name}"
+    return f'm.def("{name}", {fn_ptr}, {args}{", " if args else ""}{REDIRECT});'
 
 
 # extract information from functions
-arg_matcher = re.compile(r"(auto|void)\s+([a-zA-Z0-9_\-]+)\(([a-zA-Z0-9,&*:\-_<>\s=\n]*)\)")
+arg_matcher = re.compile(
+    r"(auto|void)\s+([a-zA-Z0-9_\-]+)\(([a-zA-Z0-9,&*:\-_<>\s=\n]*)\)"
+)
+
 
 def munge_args(args: str):
-    flattened = args.replace('\n','').replace('\r','')
+    flattened = args.replace("\n", "").replace("\r", "")
     args_split = []
-    arg = ''
+    arg = ""
     inside_template = 0
     for c in flattened:
-        if c == '<':
+        if c == "<":
             inside_template += 1
-        elif c == '>':
+        elif c == ">":
             inside_template -= 1
-        elif c == ',' and inside_template == 0:
+        elif c == "," and inside_template == 0:
             args_split.append(arg.strip())
-            arg = ''
+            arg = ""
             continue
         arg += c
 
@@ -74,41 +84,58 @@ def munge_args(args: str):
 
     return args_split
 
+
 def populate_boilerplate(model_name, text):
     functions_text = text.split("// [[stan::function]]\n")[1:]
-    functions: list[tuple[str, list[tuple[str,str]]]] = []
+    functions: list[tuple[str, list[tuple[str, str]]]] = []
 
+    seen_functions = set()
+    overloaded_functions = set()
     for fn in functions_text:
         match = arg_matcher.match(fn)
         name = match[2]
+        if name in seen_functions:
+            overloaded_functions.add(name)
+        seen_functions.add(name)
         args = munge_args(match[3])
 
+        arg_tys = []
         arg_names = []
         arg_defaults = []
         for arg in args:
-            arg_names.append(arg.split(' ')[-1].replace('&','').replace('__', ''))
+            arg_ty, arg_name = arg.rsplit(" ", maxsplit=1)
+            arg_ty += "&" * arg_name.count("&")
+            arg_names.append(arg_name.replace("&", "").replace("__", ""))
+            arg_tys.append(arg_ty)
 
             if arg.startswith("boost::ecuyer"):
                 arg_defaults.append("boost::ecuyer1988(1234)")
             else:
                 arg_defaults.append("")
 
-        functions.append((name, zip(arg_names, arg_defaults)))
+        functions.append((name, list(zip(arg_names, arg_tys, arg_defaults))))
 
-    function_defs = '\n  '.join(py_fun(f) for f in functions)
+    function_defs = "\n  ".join(
+        py_fun(f, f[0] in overloaded_functions) for f in functions
+    )
 
     return BOILERPLATE.format(model_name=model_name, functions=function_defs)
 
 
 # edit function code
-ostream_matcher = re.compile(r'(,(\s|\n)+)?std::ostream\*(\s|\n)+pstream__(\s|\n)+=(\s|\n)+nullptr')
+ostream_matcher = re.compile(
+    r"(,(\s|\n)+)?std::ostream\*(\s|\n)+pstream__(\s|\n)+=(\s|\n)+nullptr"
+)
+
+
 def set_cout(text):
     i = text.find("// [[stan::function]")
     preamble = text[:i]
     funs = text[i:]
-    stripped_arg = ostream_matcher.subn('', funs)[0]
+    stripped_arg = ostream_matcher.subn("", funs)[0]
     couts = stripped_arg.replace("pstream__", "&std::cout")
     return preamble + couts
+
 
 def preprocess(file, out=None):
     if out is None:
@@ -116,17 +143,20 @@ def preprocess(file, out=None):
 
     model, _ = os.path.splitext(os.path.basename(file))
 
-    with open(file, 'r') as f:
+    with open(file, "r") as f:
         text = f.read()
 
-    if '// [[stan::function]' not in text:
-        raise ValueError("C++ file has no stan functions exposed. Did you forget --standalone-functions?")
-        
+    if "// [[stan::function]" not in text:
+        raise ValueError(
+            "C++ file has no stan functions exposed. Did you forget --standalone-functions?"
+        )
+
     text = set_cout(insert_includes(text))
     text += populate_boilerplate(model, text)
 
-    with open(out, 'w') as f:
+    with open(out, "w") as f:
         f.write(text)
+
 
 if __name__ == "__main__":
     file = sys.argv[1]
