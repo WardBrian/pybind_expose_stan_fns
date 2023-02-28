@@ -4,15 +4,15 @@
 # 3. CmdStan or some other copy of the Stan sources is downloaded
 
 $cmdstan_location = "../cmdstan"
+$file = $args[0]
 
-
-Invoke-Expression "$cmdstan_location\bin\stanc.exe --standalone-functions --o=basic.cpp basic.stan"
-
-python ./pybind_stan_fns/preprocess.py basic.cpp
+Invoke-Expression "$cmdstan_location\bin\stanc.exe --standalone-functions --o=$file.cpp $file.stan"
+Invoke-Expression "python ./pybind_stan_fns/preprocess.py $file.cpp"
 
 $conda_library_path = "C:\ProgramData\Miniconda3\envs\clangtest\Library"
 $cpython_libs = "C:\ProgramData\Miniconda3\pkgs\python-3.8.15-h4de0772_0_cpython\libs"
 
+# equivalent of python3-config command on other platforms
 $extension = python -c "from distutils import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))"
 $pybind_includes = python -m pybind11 --includes
 
@@ -22,8 +22,8 @@ $cppflags = "-I $conda_library_path\include\ -I $cmdstan_location/stan/src -I $c
 $linkflags = "-Wl`",/LIBPATH:$conda_library_path\lib\`" -Wl`",/LIBPATH:$cpython_libs`""
 $linklibs = '-ltbb -lsundials_nvecserial -lsundials_cvodes -lsundials_idas -lsundials_kinsol -lpthread'
 
-Invoke-Expression "clang++ $cppflags $cxxflags -o basic$extension basic.cpp $linkflags $linklibs"
+Invoke-Expression "clang++ $cppflags $cxxflags -o $file$extension $file.cpp $linkflags $linklibs"
 
-rm basic.*.exp
-rm basic.*.lib
+rm "$file.*.exp"
+rm "$file.*.lib"
 
