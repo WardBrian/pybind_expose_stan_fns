@@ -51,8 +51,7 @@ jobs:
         run: |
           pytest -v
 
-
- test-package-windows:
+  test-package-windows:
     name: tests
     runs-on: windows-latest
     strategy:
