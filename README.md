@@ -30,7 +30,7 @@ Our [CI Pipeline](./github/workflows/main.yaml) shows how this is done in Github
 
 ### Miscellany
 
-There is a pure-shell version of this which just runs `g++` directly.
+There is a (possibly outdated) pure-shell version of this which just runs `g++` directly.
 
 ```shell
 ./build.sh basic.stan
@@ -38,3 +38,5 @@ python test_basic.stan
 ```
 
 Similarly on Windows, there is a `build.ps1` powershell script.
+
+Finally, there is also a version which attempts to use `setuptools` for the same effect.

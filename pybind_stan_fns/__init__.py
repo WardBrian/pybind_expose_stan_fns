@@ -65,20 +65,20 @@ CXX = "g++"
 
 if platform.system() == "Windows":
     CXX = "clang++.exe"
-    STANC = STANC.with_suffix('.exe')
+    STANC = STANC.with_suffix(".exe")
     CPP_DEFINES.extend(["_BOOST_LGAMMA", "TBB_INTERFACE_NEW"])
     CONDA_PATH = Path(os.environ["CONDA_PREFIX"])
     OTHER_INCLUDES.append(str(CONDA_PATH / "Library" / "include"))
     LDFLAGS = [
-        f'-Wl",/LIBPATH:{CONDA_PATH / "Library" / "lib"}"',
-        f'-Wl",/LIBPATH:{CONDA_PATH / "libs"}"',
+        f'-Wl,/LIBPATH:{CONDA_PATH / "Library" / "lib"}',
+        f'-Wl,/LIBPATH:{CONDA_PATH / "libs"}',
     ]
 else:  # unix
     CXX_FLAGS.extend(["-fPIC", "-fvisibility=hidden"])
     LDFLAGS = [
-        f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/tbb"',
-        f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/sundials_6.1.1/lib"',
-        f'-Wl,-rpath,"{CMDSTAN}/stan/lib/stan_math/lib/tbb"',
+        f"-Wl,-L,{CMDSTAN}/stan/lib/stan_math/lib/tbb",
+        f"-Wl,-L,{CMDSTAN}/stan/lib/stan_math/lib/sundials_6.1.1/lib",
+        f"-Wl,-rpath,{CMDSTAN}/stan/lib/stan_math/lib/tbb",
     ]
     # assume we're using the vendored sundials/tbb, could be extended one day
     CMDSTAN_SUB_INCLUDES.extend(
@@ -94,7 +94,6 @@ if platform.system() == "Darwin":
     CXX_FLAGS.extend(["-undefined", "dynamic_lookup"])
 
 CMDSTAN_INCLUDE_PATHS = [str(CMDSTAN.joinpath(*sub)) for sub in CMDSTAN_SUB_INCLUDES]
-
 
 CPP_FLAGS = [f"-D{define}" for define in CPP_DEFINES] + [
     f"-I{path}"
@@ -132,13 +131,7 @@ def expose(file: str):
         + LDLIBS
     )
 
-    res = subprocess.run(
-        " ".join(CMD),  # TODO investigate if can use shell=False
-        shell=True,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
+    res = subprocess.run(CMD, check=False, capture_output=True, text=True)
 
     if res.returncode:
         raise RuntimeError("Build failed!\n" + res.stderr)
