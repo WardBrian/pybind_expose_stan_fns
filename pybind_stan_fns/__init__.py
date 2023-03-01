@@ -65,7 +65,7 @@ CXX = "g++"
 
 if platform.system() == "Windows":
     CXX = "clang++.exe"
-    STANC = STANC.with_suffix('.exe')
+    STANC = STANC.with_suffix(".exe")
     CPP_DEFINES.extend(["_BOOST_LGAMMA", "TBB_INTERFACE_NEW"])
     CONDA_PATH = Path(os.environ["CONDA_PREFIX"])
     OTHER_INCLUDES.append(str(CONDA_PATH / "Library" / "include"))
@@ -76,9 +76,9 @@ if platform.system() == "Windows":
 else:  # unix
     CXX_FLAGS.extend(["-fPIC", "-fvisibility=hidden"])
     LDFLAGS = [
-        f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/tbb"',
-        f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/sundials_6.1.1/lib"',
-        f'-Wl,-rpath,"{CMDSTAN}/stan/lib/stan_math/lib/tbb"',
+        f"-Wl,-L,{CMDSTAN}/stan/lib/stan_math/lib/tbb",
+        f"-Wl,-L,{CMDSTAN}/stan/lib/stan_math/lib/sundials_6.1.1/lib",
+        f"-Wl,-rpath,{CMDSTAN}/stan/lib/stan_math/lib/tbb",
     ]
     # assume we're using the vendored sundials/tbb, could be extended one day
     CMDSTAN_SUB_INCLUDES.extend(
@@ -101,7 +101,7 @@ CPP_FLAGS = [f"-D{define}" for define in CPP_DEFINES] + [
     for path in CMDSTAN_INCLUDE_PATHS + OTHER_INCLUDES + get_pybind_includes()
 ]
 EXT_SUFFIX = dist_sysconfig.get_config_var("EXT_SUFFIX")
-LDLIBS = [f"-l{lib}" for lib in LIBRARIES]
+LDLIBS = [f"-l{lib}" for lib in LIBRARIES] + ["-v"]
 
 
 def expose(file: str):
@@ -132,13 +132,7 @@ def expose(file: str):
         + LDLIBS
     )
 
-    res = subprocess.run(
-        " ".join(CMD),  # TODO investigate if can use shell=False
-        shell=True,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
+    res = subprocess.run(CMD, check=False, capture_output=True, text=True)
 
     if res.returncode:
         raise RuntimeError("Build failed!\n" + res.stderr)
