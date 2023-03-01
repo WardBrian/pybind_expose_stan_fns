@@ -40,7 +40,6 @@ LIBRARIES = [
     "sundials_cvodes",
     "sundials_idas",
     "sundials_kinsol",
-    "pthread",
 ]
 
 CMDSTAN_SUB_INCLUDES = [
@@ -76,7 +75,7 @@ if platform.system() == "Windows":
     ]
 else:  # unix
     CXX_FLAGS.extend(["-fPIC", "-fvisibility=hidden"])
-    LIBRARIES.append("m")
+    # LIBRARIES.extend(["m", "pthread"])
     LDFLAGS = [
         f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/tbb"',
         f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/sundials_6.1.1/lib"',
@@ -145,5 +144,5 @@ def expose(file: str):
     if res.returncode:
         raise RuntimeError("Build failed!\n" + res.stderr)
     sys.path.append(str(file_path.parent))
-    
+
     return importlib.import_module(file_path.stem)
