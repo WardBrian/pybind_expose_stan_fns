@@ -70,8 +70,8 @@ if platform.system() == "Windows":
     CONDA_PATH = Path(os.environ["CONDA_PREFIX"])
     OTHER_INCLUDES.append(str(CONDA_PATH / "Library" / "include"))
     LDFLAGS = [
-        f'-Wl",/LIBPATH:{CONDA_PATH / "Library" / "lib"}"',
-        f'-Wl",/LIBPATH:{CONDA_PATH / "libs"}"',
+        f'-Wl,/LIBPATH:{CONDA_PATH / "Library" / "lib"}',
+        f'-Wl,/LIBPATH:{CONDA_PATH / "libs"}',
     ]
 else:  # unix
     CXX_FLAGS.extend(["-fPIC", "-fvisibility=hidden"])
