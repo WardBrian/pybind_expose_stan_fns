@@ -1,5 +1,3 @@
-# will probably only work on Unix-like systems.
-
 import importlib
 import os
 import platform
@@ -32,7 +30,7 @@ def get_pybind_includes():
 
 
 CMDSTAN = Path(cmdstanpy.cmdstan_path())
-stanc = CMDSTAN / "bin" / "stanc"
+STANC = CMDSTAN / "bin" / "stanc"
 
 CPP_DEFINES = ["_REENTRANT", "BOOST_DISABLE_ASSERTS"]
 
@@ -42,7 +40,6 @@ LIBRARIES = [
     "sundials_cvodes",
     "sundials_idas",
     "sundials_kinsol",
-    "pthread",
 ]
 
 CMDSTAN_SUB_INCLUDES = [
@@ -68,20 +65,22 @@ CXX = "g++"
 
 if platform.system() == "Windows":
     CXX = "clang++.exe"
+    STANC = STANC.with_suffix('.exe')
     CPP_DEFINES.extend(["_BOOST_LGAMMA", "TBB_INTERFACE_NEW"])
     CONDA_PATH = Path(os.environ["CONDA_PREFIX"])
     OTHER_INCLUDES.append(str(CONDA_PATH / "Library" / "include"))
     LDFLAGS = [
-        f'-Wl",/LIBPATH:{CONDA_PATH / "Library" / "lib"}"'
-    ]  # TODO handle python3.dll
+        f'-Wl",/LIBPATH:{CONDA_PATH / "Library" / "lib"}"',
+        f'-Wl",/LIBPATH:{CONDA_PATH / "libs"}"',
+    ]
 else:  # unix
     CXX_FLAGS.extend(["-fPIC", "-fvisibility=hidden"])
-    LIBRARIES.append("m")
     LDFLAGS = [
         f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/tbb"',
         f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/sundials_6.1.1/lib"',
         f'-Wl,-rpath,"{CMDSTAN}/stan/lib/stan_math/lib/tbb"',
     ]
+    # assume we're using the vendored sundials/tbb, could be extended one day
     CMDSTAN_SUB_INCLUDES.extend(
         [
             ("stan", "lib", "stan_math", "lib", "tbb_2020.3", "include"),
@@ -109,7 +108,7 @@ def expose(file: str):
     file_path = Path(file).resolve()
     subprocess.run(
         [
-            str(stanc),
+            str(STANC),
             "--standalone-functions",
             f"--include-paths={file_path.parent}",
             f"--o={file_path.parent / file_path.stem}.cpp-pre",
@@ -144,4 +143,5 @@ def expose(file: str):
     if res.returncode:
         raise RuntimeError("Build failed!\n" + res.stderr)
     sys.path.append(str(file_path.parent))
+
     return importlib.import_module(file_path.stem)

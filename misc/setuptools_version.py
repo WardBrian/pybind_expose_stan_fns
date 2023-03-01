@@ -28,7 +28,13 @@ basic = Pybind11Extension(
     sources=["basic.cpp"],
     include_dirs=include_dirs,
     define_macros=[("_REENTRANT", None), ("BOOST_DISABLE_ASSERTS", None)],
-    libraries=["m", "pthread", "tbb"],
+    libraries=[
+        "tbb",
+        "sundials_nvecserial",
+        "sundials_cvodes",
+        "sundials_idas",
+        "sundials_kinsol",
+    ],
     library_dirs=library_dirs,
     runtime_library_dirs=runtime_dirs,
 )

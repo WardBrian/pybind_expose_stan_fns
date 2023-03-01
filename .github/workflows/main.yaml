@@ -50,3 +50,47 @@ jobs:
       - name: Run tests
         run: |
           pytest -v
+
+  test-package-windows:
+    name: tests-windows
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9, "3.10"]
+
+    steps:
+      - name: Check out github
+        uses: actions/checkout@v3
+
+      - name: Cache conda
+        uses: actions/cache@v3
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('.github/windows-env.yml') }}
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          mamba-version: "*"
+          channels: conda-forge,defaults
+          channel-priority: true
+          activate-environment: windows
+          environment-file: .github/windows-env.yml
+          use-only-tar-bz2: true
+          auto-update-conda: true
+
+      - name: override is_nan [temp] # remove after 2.32 is released
+        run: |
+          Invoke-WebRequest -URI https://raw.githubusercontent.com/stan-dev/math/edfc5b8fd2c4d715448e7ccfa7aba86711da5ca7/stan/math/prim/fun/is_nan.hpp -OutFile "$env:CMDSTAN/stan/lib/stan_math/stan/math/prim/fun/is_nan.hpp"
+
+      - name: Install package
+        run: |
+          pip install -e .[test]
+
+      - name: Run tests
+        run: |
+          pytest -v

@@ -12,7 +12,7 @@ thin wrappers for `boost::ecuyer1988` and `stan::math::accumulator<double>`, res
 
 ## Running
 
-Currently, this has only been confirmed to work on Ubuntu. It assumes you have a working installation of
+This assumes you have a working installation of
 [CmdStan](https://github.com/stan-dev/cmdstan), and a Python environment with both
 [cmdstanpy](https://github.com/stan-dev/cmdstanpy) and [PyBind11](https://github.com/pybind/pybind11)
 
@@ -22,7 +22,13 @@ basic = pybind_stan_fns.expose('./test/basic.stan')
 basic.test_printing() # etc
 ```
 
-### Errata
+**Note**: On Windows, the above is not sufficient. One also must have
+the [Microsoft Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/),
+including the optional LLVM/Clang extensions, and a pre-built version of both Sundials and TBB.
+The `expose` function assumes these were installed via [conda](https://docs.conda.io/en/latest/).
+Our [CI Pipeline](./github/workflows/main.yaml) shows how this is done in Github Actions
+
+### Miscellany
 
 There is a pure-shell version of this which just runs `g++` directly.
 
@@ -31,5 +37,4 @@ There is a pure-shell version of this which just runs `g++` directly.
 python test_basic.stan
 ```
 
-There is also an experiment using `setuptools` to build the module in `setuptools_version.py`.
-This probably has the brightest future in terms of working on other platforms.
+Similarly on Windows, there is a `build.ps1` powershell script.

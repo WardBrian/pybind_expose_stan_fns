@@ -1,0 +1,9 @@
+name: windows
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - tbb-devel>=2021
+  - sundials==6.1.1
+  - cmdstan # for speed, we don't really need all the mingw stuff this pulls in
+  - pip
