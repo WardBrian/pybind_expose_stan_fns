@@ -3,14 +3,14 @@
 # 2. Sundials and TBB are installed via conda
 # 3. CmdStan or some other copy of the Stan sources is downloaded
 
-$cmdstan_location = "../cmdstan"
+$cmdstan_location = "$env:CMDSTAN"
 $file = $args[0]
 
 Invoke-Expression "$cmdstan_location\bin\stanc.exe --standalone-functions --o=$file.cpp $file.stan"
 Invoke-Expression "python ./pybind_stan_fns/preprocess.py $file.cpp"
 
-$conda_library_path = "C:\ProgramData\Miniconda3\envs\clangtest\Library"
-$cpython_libs = "C:\ProgramData\Miniconda3\pkgs\python-3.8.15-h4de0772_0_cpython\libs"
+$conda_library_path = "$env:CONDA_PREFIX\Library"
+$cpython_libs = "$conda_library_path\libs"
 
 # equivalent of python3-config command on other platforms
 $extension = python -c "from distutils import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))"
