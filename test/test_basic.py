@@ -15,11 +15,7 @@ HERE = Path(__file__).parent.resolve()
 try:
     import pybind11  # noqa
 except ImportError:
-    pytest.skip("PyBind11 not installed!", allow_module_level=True)
-
-if sys.platform.startswith("win"):
-    pytest.skip("Exposed function tests cannot run on Windows", allow_module_level=True)
-
+    pytest.fail("PyBind11 not installed!")
 
 @pytest.fixture(scope="session")
 def basic():
