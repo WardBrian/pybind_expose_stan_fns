@@ -95,13 +95,12 @@ if platform.system() == "Darwin":
 
 CMDSTAN_INCLUDE_PATHS = [str(CMDSTAN.joinpath(*sub)) for sub in CMDSTAN_SUB_INCLUDES]
 
-
 CPP_FLAGS = [f"-D{define}" for define in CPP_DEFINES] + [
     f"-I{path}"
     for path in CMDSTAN_INCLUDE_PATHS + OTHER_INCLUDES + get_pybind_includes()
 ]
 EXT_SUFFIX = dist_sysconfig.get_config_var("EXT_SUFFIX")
-LDLIBS = [f"-l{lib}" for lib in LIBRARIES] + ["-v"]
+LDLIBS = [f"-l{lib}" for lib in LIBRARIES]
 
 
 def expose(file: str):
