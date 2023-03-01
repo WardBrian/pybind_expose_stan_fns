@@ -70,6 +70,7 @@ if platform.system() == "Windows":
     CXX = "clang++.exe"
     CPP_DEFINES.extend(["_BOOST_LGAMMA", "TBB_INTERFACE_NEW"])
     CONDA_PATH = Path(os.environ["CONDA_PREFIX"])
+
     OTHER_INCLUDES.append(str(CONDA_PATH / "Library" / "include"))
     LDFLAGS = [
         f'-Wl",/LIBPATH:{CONDA_PATH / "Library" / "lib"}"',
@@ -103,7 +104,7 @@ CPP_FLAGS = [f"-D{define}" for define in CPP_DEFINES] + [
     for path in CMDSTAN_INCLUDE_PATHS + OTHER_INCLUDES + get_pybind_includes()
 ]
 EXT_SUFFIX = dist_sysconfig.get_config_var("EXT_SUFFIX")
-LDLIBS = [f"-l{lib}" for lib in LIBRARIES] + ["-v"]
+LDLIBS = [f"-l{lib}" for lib in LIBRARIES]
 
 
 def expose(file: str):

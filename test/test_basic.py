@@ -1,6 +1,6 @@
 import io
 import os
-import sys
+import warnings
 from contextlib import redirect_stdout
 from glob import glob
 from pathlib import Path
@@ -17,13 +17,17 @@ try:
 except ImportError:
     pytest.fail("PyBind11 not installed!")
 
+
 @pytest.fixture(scope="session")
 def basic():
     module = expose(HERE / "basic.stan")
     yield module
     for file in glob(str(HERE / "basic.*")):
         if not file.endswith(".stan"):
-            os.remove(file)
+            try:
+                os.remove(file)
+            except Exception as e:
+                warnings.warn(f"Unable to remove {file}, error {e}")
 
 
 def test_simple_functions(basic):
