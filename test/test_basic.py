@@ -31,14 +31,21 @@ def basic():
 
 
 def test_simple_functions(basic):
-    assert basic.int_only_multiplication(4,5) == 20
-    np.testing.assert_array_equal(basic.my_vector_mul_by_5(np.arange(1,10)), np.arange(1,10) * 5)
+    assert basic.int_only_multiplication(4, 5) == 20
+    np.testing.assert_array_equal(
+        basic.my_vector_mul_by_5(np.arange(1, 10)), np.arange(1, 10) * 5
+    )
 
-    assert basic.array_fun([1,2,3,4,5.5]) == sum([1,2,3,4,5.5])
+    assert basic.array_fun([1, 2, 3, 4, 5.5]) == sum([1, 2, 3, 4, 5.5])
+
 
 def test_rng(basic):
-    assert basic.test_rng(10, base_rng=basic.StanRNG(123)) == basic.test_rng(10, base_rng=basic.StanRNG(123))
-    assert basic.test_rng(10, base_rng=basic.StanRNG(123)) != basic.test_rng(10, base_rng=basic.StanRNG(465))
+    assert basic.test_rng(10, base_rng=basic.StanRNG(123)) == basic.test_rng(
+        10, base_rng=basic.StanRNG(123)
+    )
+    assert basic.test_rng(10, base_rng=basic.StanRNG(123)) != basic.test_rng(
+        10, base_rng=basic.StanRNG(465)
+    )
 
 
 def test_printing(basic):
@@ -49,6 +56,7 @@ def test_printing(basic):
 
     assert redirected.getvalue() == "hi there!\n"
 
+
 def test_error(basic):
     with pytest.raises(ValueError):
         basic.test_error()
@@ -57,4 +65,4 @@ def test_error(basic):
 def test_overload(basic):
     assert basic.test_overload() == 0
     assert basic.test_overload(34) == 1
-    assert basic.test_overload(np.arange(2,4)) == 2
+    assert basic.test_overload(np.arange(2, 4)) == 2
