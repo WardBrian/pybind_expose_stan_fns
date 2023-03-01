@@ -75,7 +75,6 @@ if platform.system() == "Windows":
     ]
 else:  # unix
     CXX_FLAGS.extend(["-fPIC", "-fvisibility=hidden"])
-    # LIBRARIES.extend(["m", "pthread"])
     LDFLAGS = [
         f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/tbb"',
         f'-Wl,-L,"{CMDSTAN}/stan/lib/stan_math/lib/sundials_6.1.1/lib"',

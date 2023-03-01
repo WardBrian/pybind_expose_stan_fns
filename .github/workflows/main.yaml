@@ -87,10 +87,6 @@ jobs:
         run: |
           Invoke-WebRequest -URI https://raw.githubusercontent.com/stan-dev/math/edfc5b8fd2c4d715448e7ccfa7aba86711da5ca7/stan/math/prim/fun/is_nan.hpp -OutFile "$env:CMDSTAN/stan/lib/stan_math/stan/math/prim/fun/is_nan.hpp"
 
-      - name: debug
-        run: |
-          Get-ChildItem -Recurse "$env:CONDA_PREFIX" -Depth 3
-
       - name: Install package
         run: |
           pip install -e .[test]
