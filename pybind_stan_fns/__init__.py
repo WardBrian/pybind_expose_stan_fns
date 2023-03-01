@@ -62,7 +62,6 @@ CXX_FLAGS = [
     "-Wno-deprecated-builtins",
     "-Wno-ignored-attributes",
     "-shared",
-    "-v",
 ]
 
 CXX = "g++"
