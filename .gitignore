@@ -1,6 +1,8 @@
 *.cpp
 *.cpp-pre
 *.so
+*.dylib
+*.pyd
 
 __pycache__/
 build/
