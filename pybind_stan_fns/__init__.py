@@ -62,7 +62,6 @@ CXX_FLAGS = [
     "-Wno-deprecated-builtins",
     "-Wno-ignored-attributes",
     "-shared",
-    "-v",
 ]
 
 CXX = "g++"
@@ -103,7 +102,7 @@ CPP_FLAGS = [f"-D{define}" for define in CPP_DEFINES] + [
     for path in CMDSTAN_INCLUDE_PATHS + OTHER_INCLUDES + get_pybind_includes()
 ]
 EXT_SUFFIX = dist_sysconfig.get_config_var("EXT_SUFFIX")
-LDLIBS = [f"-l{lib}" for lib in LIBRARIES]
+LDLIBS = [f"-l{lib}" for lib in LIBRARIES] + ['-v']
 
 
 def expose(file: str):
