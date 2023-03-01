@@ -133,6 +133,8 @@ def expose(file: str):
         + LDLIBS
     )
 
+    print(CMD)
+
     res = subprocess.run(
         " ".join(CMD),  # TODO investigate if can use shell=False
         shell=True,
