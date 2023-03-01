@@ -93,7 +93,7 @@ else:  # unix
 
 if platform.system() == "Darwin":
     CXX = "clang++"
-    CXX_FLAGS.append("-undefined=dynamic_lookup")
+    CXX_FLAGS.extend(["-undefined", "dynamic_lookup"])
 
 CMDSTAN_INCLUDE_PATHS = [str(CMDSTAN.joinpath(*sub)) for sub in CMDSTAN_SUB_INCLUDES]
 
