@@ -22,6 +22,7 @@ except ImportError:
 def basic():
     module = expose(HERE / "basic.stan")
     yield module
+    del module
     for file in glob(str(HERE / "basic.*")):
         if not file.endswith(".stan"):
             try:

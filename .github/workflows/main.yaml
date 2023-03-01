@@ -62,6 +62,16 @@ jobs:
       - name: Check out github
         uses: actions/checkout@v3
 
+      - name: Cache conda
+        uses: actions/cache@v2
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('.github/windows-env.yml') }}
+
       - uses: conda-incubator/setup-miniconda@v2
         with:
           python-version: ${{ matrix.python-version }}
@@ -70,6 +80,7 @@ jobs:
           channel-priority: true
           activate-environment: windows
           environment-file: .github/windows-env.yml
+          use-only-tar-bz2: true
 
       - name: override is_nan [temp] # remove after 2.32 is released
         run: |
