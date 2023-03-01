@@ -105,6 +105,8 @@ LDLIBS = [f"-l{lib}" for lib in LIBRARIES]
 
 def expose(file: str):
     file_path = Path(file).resolve()
+
+    # create .cpp file and add pybind specific code
     subprocess.run(
         [
             str(STANC),
@@ -119,7 +121,9 @@ def expose(file: str):
         str(file_path.parent / file_path.stem) + ".cpp-pre",
         out=(str(file_path.parent / file_path.stem) + ".cpp"),
     )
-    CMD = (
+
+    # invoke compiler
+    compile_command = (
         [CXX]
         + CXX_FLAGS
         + CPP_FLAGS
@@ -130,8 +134,7 @@ def expose(file: str):
         + LDFLAGS
         + LDLIBS
     )
-
-    res = subprocess.run(CMD, check=False, capture_output=True, text=True)
+    res = subprocess.run(compile_command, check=False, capture_output=True, text=True)
 
     if res.returncode:
         raise RuntimeError("Build failed!\n" + res.stderr)
