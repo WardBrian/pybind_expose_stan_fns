@@ -52,7 +52,7 @@ jobs:
           pytest -v
 
   test-package-windows:
-    name: tests
+    name: tests-windows
     runs-on: windows-latest
     strategy:
       matrix:

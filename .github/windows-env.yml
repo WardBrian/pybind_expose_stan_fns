@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - tbb>=2022.3
+  - tbb-devel>=2021
   - sundials==6.1.1
   - cmdstan
   - pip
