@@ -46,7 +46,7 @@ CMDSTAN_SUB_INCLUDES = [
     ("stan", "src"),
     ("stan", "lib", "rapidjson_1.1.0"),
     ("stan", "lib", "stan_math"),
-    ("stan", "lib", "stan_math", "lib", "eigen_3.3.9"),
+    ("stan", "lib", "stan_math", "lib", "eigen_3.4.0"),
     ("stan", "lib", "stan_math", "lib", "boost_1.78.0"),
 ]
 

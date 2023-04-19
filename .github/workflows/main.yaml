@@ -11,7 +11,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  CMDSTAN_VERSION: "2.31.0"
+  CMDSTAN_VERSION: "2.32.0"
 
 jobs:
   test-package:
@@ -82,10 +82,6 @@ jobs:
           environment-file: .github/windows-env.yml
           use-only-tar-bz2: true
           auto-update-conda: true
-
-      - name: override is_nan [temp] # remove after 2.32 is released
-        run: |
-          Invoke-WebRequest -URI https://raw.githubusercontent.com/stan-dev/math/edfc5b8fd2c4d715448e7ccfa7aba86711da5ca7/stan/math/prim/fun/is_nan.hpp -OutFile "$env:CMDSTAN/stan/lib/stan_math/stan/math/prim/fun/is_nan.hpp"
 
       - name: Install package
         run: |
