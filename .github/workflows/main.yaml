@@ -12,6 +12,7 @@ on:
 
 env:
   CMDSTAN_VERSION: "2.32.1"
+  CACHE_NUMBER: 1
 
 jobs:
   test-package:
@@ -41,7 +42,7 @@ jobs:
         id: cmdstan-cache
         with:
           path: ~/.cmdstan
-          key: ${{ runner.os }}-cmdstan-${{ env.CMDSTAN_VERSION }}
+          key: ${{ runner.os }}-cmdstan-${{ env.CMDSTAN_VERSION }}-${{ env.CACHE_NUMBER }}
 
       - name: Install CmdStan
         run: |
@@ -80,7 +81,6 @@ jobs:
           channel-priority: true
           activate-environment: windows
           environment-file: .github/windows-env.yml
-          use-only-tar-bz2: true
           auto-update-conda: true
 
       - name: Install package
