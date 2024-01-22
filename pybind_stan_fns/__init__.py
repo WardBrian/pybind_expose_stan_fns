@@ -47,7 +47,7 @@ CMDSTAN_SUB_INCLUDES = [
     ("stan", "lib", "rapidjson_1.1.0"),
     ("stan", "lib", "stan_math"),
     ("stan", "lib", "stan_math", "lib", "eigen_3.4.0"),
-    ("stan", "lib", "stan_math", "lib", "boost_1.78.0"),
+    ("stan", "lib", "stan_math", "lib", "boost_1.81.0"),
 ]
 
 OTHER_INCLUDES = []
@@ -137,7 +137,7 @@ def expose(file: str):
     res = subprocess.run(compile_command, check=False, capture_output=True, text=True)
 
     if res.returncode:
-        raise RuntimeError("Build failed!\n" + res.stderr)
+        raise RuntimeError("Build failed!\n" + " ".join(compile_command) + "\n" + res.stderr)
     sys.path.append(str(file_path.parent))
 
     return importlib.import_module(file_path.stem)

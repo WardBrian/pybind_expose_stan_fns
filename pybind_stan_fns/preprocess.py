@@ -59,7 +59,7 @@ def py_fun(fn, is_overload):
 
 # extract information from functions
 arg_matcher = re.compile(
-    r"(auto|void)\s+([a-zA-Z0-9_\-]+)\(([a-zA-Z0-9,&*:\-_<>\s=\n]*)\)"
+    r"([a-zA-Z][a-zA-Z0-9,&*:\-_<>\s=]*)\s+([a-zA-Z0-9_\-]+)\(([a-zA-Z0-9,&*:\-_<>\s=\n]*)\)"
 )
 
 
