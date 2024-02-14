@@ -11,7 +11,7 @@ include_dirs = [
     cmdstan_path + "/lib/rapidjson_1.1.0/",
     cmdstan_path + "/stan/lib/stan_math/",
     cmdstan_path + "/stan/lib/stan_math/lib/eigen_3.4.0",
-    cmdstan_path + "/stan/lib/stan_math/lib/boost_1.78.0",
+    cmdstan_path + "/stan/lib/stan_math/lib/boost_1.84.0",
     cmdstan_path + "/stan/lib/stan_math/lib/sundials_6.1.1/include",
     cmdstan_path + "/stan/lib/stan_math/lib/sundials_6.1.1/src/sundials",
 ]

@@ -11,7 +11,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  CMDSTAN_VERSION: "2.34.0"
+  CMDSTAN_VERSION: "2.35.0"
   CACHE_NUMBER: 1
 
 jobs:

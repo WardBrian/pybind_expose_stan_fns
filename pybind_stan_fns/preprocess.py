@@ -22,7 +22,7 @@ BOILERPLATE = """
 PYBIND11_MODULE({model_name}, m)
 {{
 
-  py::class_<boost::ecuyer1988>(m, "StanRNG")
+  py::class_<stan::rng_t>(m, "StanRNG")
       .def(py::init<int>());
 
   using acc = stan::math::accumulator<double>;
@@ -108,8 +108,8 @@ def populate_boilerplate(model_name, text):
             arg_names.append(arg_name.replace("&", "").replace("__", ""))
             arg_tys.append(arg_ty)
 
-            if arg.startswith("boost::ecuyer"):
-                arg_defaults.append("boost::ecuyer1988(1234)")
+            if arg.startswith("stan::rng_t"):
+                arg_defaults.append("stan::rng_t(1234)")
             else:
                 arg_defaults.append("")
 

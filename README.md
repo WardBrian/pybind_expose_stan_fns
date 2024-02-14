@@ -8,7 +8,7 @@ This is very similar to *[Exposing Stan user-defined functions using CmdStanR an
 
 This supports all possible Stan functions, including pRNGs and functions which edit the `target` variable.
 These are supported through two objects exposed on all models, `StanRNG` and `StanAccumulator`, which are
-thin wrappers for `boost::ecuyer1988` and `stan::math::accumulator<double>`, respectively.
+thin wrappers for `stan::rng_t` and `stan::math::accumulator<double>`, respectively.
 
 ## Running
 
