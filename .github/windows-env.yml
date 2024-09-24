@@ -5,5 +5,5 @@ channels:
 dependencies:
   - tbb-devel>=2021
   - sundials==6.1.1
-  - cmdstan==2.34.0 # for speed, we don't really need all the mingw stuff this pulls in
+  - cmdstan==2.35.0 # for speed, we don't really need all the mingw stuff this pulls in
   - pip
