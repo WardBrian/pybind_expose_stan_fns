@@ -4,7 +4,6 @@ import platform
 import subprocess
 import sys
 import sysconfig
-from distutils import sysconfig as dist_sysconfig
 from pathlib import Path
 
 import cmdstanpy
@@ -68,7 +67,7 @@ if platform.system() == "Windows":
     STANC = STANC.with_suffix(".exe")
     CPP_DEFINES.extend(["_BOOST_LGAMMA", "TBB_INTERFACE_NEW"])
     CONDA_PATH = Path(os.environ["CONDA_PREFIX"])
-    OTHER_INCLUDES.append(str(CONDA_PATH / "Library" / "include"))
+    OTHER_INCLUDES.append(os.fspath(CONDA_PATH / "Library" / "include"))
     LDFLAGS = [
         f'-Wl,/LIBPATH:{CONDA_PATH / "Library" / "lib"}',
         f'-Wl,/LIBPATH:{CONDA_PATH / "libs"}',
@@ -93,13 +92,13 @@ if platform.system() == "Darwin":
     CXX = "clang++"
     CXX_FLAGS.extend(["-undefined", "dynamic_lookup"])
 
-CMDSTAN_INCLUDE_PATHS = [str(CMDSTAN.joinpath(*sub)) for sub in CMDSTAN_SUB_INCLUDES]
+CMDSTAN_INCLUDE_PATHS = [os.fspath(CMDSTAN.joinpath(*sub)) for sub in CMDSTAN_SUB_INCLUDES]
 
 CPP_FLAGS = [f"-D{define}" for define in CPP_DEFINES] + [
     f"-I{path}"
     for path in CMDSTAN_INCLUDE_PATHS + OTHER_INCLUDES + get_pybind_includes()
 ]
-EXT_SUFFIX = dist_sysconfig.get_config_var("EXT_SUFFIX")
+EXT_SUFFIX = sysconfig.get_config_var("EXT_SUFFIX")
 LDLIBS = [f"-l{lib}" for lib in LIBRARIES]
 
 
@@ -109,17 +108,17 @@ def expose(file: str):
     # create .cpp file and add pybind specific code
     subprocess.run(
         [
-            str(STANC),
+            os.fspath(STANC),
             "--standalone-functions",
             f"--include-paths={file_path.parent}",
-            f"--o={file_path.parent / file_path.stem}.cpp-pre",
-            str(file_path),
+            f"--o={file_path.parent / file_path.with_suffix('.cpp-pre')}",
+            os.fspath(file_path),
         ],
         check=True,
     )
     preprocess.preprocess(
-        str(file_path.parent / file_path.stem) + ".cpp-pre",
-        out=(str(file_path.parent / file_path.stem) + ".cpp"),
+        os.fspath(file_path.parent / file_path.with_suffix(".cpp-pre")),
+        out=os.fspath(file_path.parent / file_path.with_suffix(".cpp")),
     )
 
     # invoke compiler
@@ -128,8 +127,8 @@ def expose(file: str):
         + CXX_FLAGS
         + CPP_FLAGS
         + [
-            f"-o{file_path.parent / file_path.stem}{EXT_SUFFIX}",
-            f"{file_path.parent / file_path.stem}.cpp",
+            f"-o{file_path.parent / file_path.with_suffix(EXT_SUFFIX)}",
+           os.fspath(file_path.parent / file_path.with_suffix(".cpp")),
         ]
         + LDFLAGS
         + LDLIBS
@@ -138,6 +137,6 @@ def expose(file: str):
 
     if res.returncode:
         raise RuntimeError("Build failed!\n" + " ".join(compile_command) + "\n" + res.stderr)
-    sys.path.append(str(file_path.parent))
+    sys.path.append(os.fspath(file_path.parent))
 
     return importlib.import_module(file_path.stem)
