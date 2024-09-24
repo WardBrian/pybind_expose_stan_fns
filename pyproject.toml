@@ -1,3 +1,21 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "pybind_stan_fns"
+readme = "README.md"
+version = "0.0.1"
+license = { text = "BSD-3-Clause" }
+authors = [{ name = "Brian Ward", email = "bward@flatironinstitute.org" }]
+requires-python = ">=3.8"
+dependencies = ["numpy>=1.21.0", "cmdstanpy>=1.0.6", "pybind11"]
+
+[project.urls]
+"Homepage" = "https://github.com/WardBrian/pybind_expose_stan_fns"
+
+[tool.setuptools]
+packages = ["pybind_stan_fns"]
+
+[project.optional-dependencies]
+test = ["pytest"]
