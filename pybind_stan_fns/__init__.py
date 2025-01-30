@@ -52,7 +52,7 @@ CMDSTAN_SUB_INCLUDES = [
 OTHER_INCLUDES = []
 
 CXX_FLAGS = [
-    "-std=c++1y",
+    "-std=c++17",
     "-O3",
     "-Wno-sign-compare",
     "-Wno-deprecated-builtins",
