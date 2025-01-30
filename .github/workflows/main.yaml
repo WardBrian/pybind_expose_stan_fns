@@ -45,6 +45,10 @@ jobs:
           path: ~/.cmdstan
           key: ${{ runner.os }}-cmdstan-${{ env.CMDSTAN_VERSION }}-${{ env.CACHE_NUMBER }}
 
+      - name: Delete precompiled header (MacOS)
+        if: matrix.os == 'macos-latest' && steps.cmdstan-cache.outputs.cache-hit == 'true'
+        run: rm -rf ~/.cmdstan/cmdstan-${{ env.CMDSTAN_VERSION }}/stan/src/stan/model/*.hpp.gch
+
       - name: Install CmdStan
         run: |
           install_cmdstan --version "${{ env.CMDSTAN_VERSION }}" --cores 2 --verbose
