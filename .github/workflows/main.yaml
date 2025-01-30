@@ -26,10 +26,10 @@ jobs:
 
     steps:
       - name: Check out github
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -39,7 +39,7 @@ jobs:
           pip install -e .[test]
 
       - name: CmdStan installation cacheing
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cmdstan-cache
         with:
           path: ~/.cmdstan
@@ -63,10 +63,10 @@ jobs:
 
     steps:
       - name: Check out github
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache conda
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           CACHE_NUMBER: 0
         with:
@@ -75,7 +75,7 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
             hashFiles('.github/windows-env.yml') }}
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           python-version: ${{ matrix.python-version }}
           mamba-version: "*"
