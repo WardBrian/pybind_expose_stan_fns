@@ -34,19 +34,20 @@ STANC = CMDSTAN / "bin" / "stanc"
 CPP_DEFINES = ["_REENTRANT", "BOOST_DISABLE_ASSERTS"]
 
 LIBRARIES = [
-    "tbb",
     "sundials_nvecserial",
     "sundials_cvodes",
     "sundials_idas",
     "sundials_kinsol",
 ]
 
+TBB_LIBRARY = CMDSTAN / "stan/lib/stan_math/lib/tbb/libtbb.so.2"
+
 CMDSTAN_SUB_INCLUDES = [
     ("stan", "src"),
     ("stan", "lib", "rapidjson_1.1.0"),
     ("stan", "lib", "stan_math"),
     ("stan", "lib", "stan_math", "lib", "eigen_3.4.0"),
-    ("stan", "lib", "stan_math", "lib", "boost_1.84.0"),
+    ("stan", "lib", "stan_math", "lib", "boost_1.87.0"),
 ]
 
 OTHER_INCLUDES = []
@@ -99,7 +100,10 @@ CPP_FLAGS = [f"-D{define}" for define in CPP_DEFINES] + [
     for path in CMDSTAN_INCLUDE_PATHS + OTHER_INCLUDES + get_pybind_includes()
 ]
 EXT_SUFFIX = sysconfig.get_config_var("EXT_SUFFIX")
-LDLIBS = [f"-l{lib}" for lib in LIBRARIES]
+LDLIBS = [
+    os.fspath(TBB_LIBRARY),
+    *[f"-l{lib}" for lib in LIBRARIES],
+]
 
 
 def expose(file: str):
