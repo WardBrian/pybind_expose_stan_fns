@@ -11,7 +11,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  CMDSTAN_VERSION: "2.36.0"
+  CMDSTAN_VERSION: "2.39.0"
   CACHE_NUMBER: 0
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: [3.9, "3.10", 3.11, 3.12]
+        python-version: ["3.10", 3.11, 3.12, 3.13, 3.14]
       fail-fast: false
 
     steps:
@@ -62,7 +62,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [3.9, "3.10", 3.11, 3.12]
+        python-version: ["3.10", 3.11, 3.12, 3.13, 3.14]
       fail-fast: false
 
     steps:
